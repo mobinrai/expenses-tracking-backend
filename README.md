@@ -26,7 +26,7 @@
 
 Clone the repository:
 ```bash
-git clone https://github.com/your-username/expenses-tracking-backend.git
+git clone git@github.com:mobinrai/expenses-tracking-backend.git
 cd expenses-tracking-backend
 ```
 
