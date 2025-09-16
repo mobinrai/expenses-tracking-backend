@@ -1,62 +1,57 @@
-📊 Expenses Tracking Backend
+## 📊 Expenses Tracking Backend
 
-A backend service for tracking expenses, built with Node.js, Express, and MongoDB.
+### A backend service for tracking expenses, built with Node.js, Express, and MongoDB.
 
-🚀 Features
+## 🚀 Features
 
-User authentication with JWT
+ - User authentication with JWT
+ - Secure password hashing with bcrypt
+ - RESTful API using Express
+ - MongoDB database integration with Mongoose
+ - CORS enabled for cross-origin requests
 
-Secure password hashing with bcrypt
+## 📦 Tech Stack
 
-RESTful API using Express
-
-MongoDB database integration with Mongoose
-
-CORS enabled for cross-origin requests
-
-📦 Tech Stack
-
-Node.js
+- Node.js
  (v18+ recommended)
-
-Express
-
-MongoDB
- + Mongoose
-
-bcrypt
+- Express
+- MongoDB
+- Mongoose
+- bcrypt
  for password hashing
-
-jsonwebtoken
+- jsonwebtoken
  for authentication
 
-
- ⚙️ Installation
+## ⚙️ Installation
 
 Clone the repository:
-
+```bash
 git clone https://github.com/your-username/expenses-tracking-backend.git
 cd expenses-tracking-backend
-
+```
 
 Install dependencies:
-
+```bash
 npm install
+```
 
-
-Create a .env file in the root directory:
+## Create a .env file in the root directory:
+```bash
+env
 
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/expenses
 JWT_SECRET=your_jwt_secret
+JWT_EXPIRE=1d
+```
 
-
-▶️ Running the Server
+## ▶️ Running the Server
 
 Start the server in watch mode:
 
+```bash
 npm start
-
+```
 
 By default, it will run on:
 👉 http://localhost:5000
