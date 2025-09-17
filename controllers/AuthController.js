@@ -45,7 +45,7 @@ export const register = async (req, res) => {
 export const login= async (req, res) => {
     try {
         const { email, password } = req.body;
-
+        console.log(req.body);
         // Check if user exists
         const user = await User.findOne({ email });
         if (!user) {
@@ -77,9 +77,21 @@ export const login= async (req, res) => {
     }
 }
 
-// export const verify = async (req, res) => {
-//     res.json({ valid: true, user: req.user });
-// }
+export const me = async (req, res) => {
+    try {
+        res.json({
+        user: {
+            id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            currency: req.user.currency,
+            settings: req.user.settings
+        }
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+}
 
 async function hashPassword(password) {
   const saltRounds = 10; // cost factor

@@ -7,9 +7,10 @@ import transactionRoute from './routes/transactionRoute.js'
 import budgetRoute from './routes/budgetRoute.js'
 import recurringTransactionRoute from './routes/recurringTransactionRoute.js'
 import authRoute from './routes/authRoute.js'
-
+import cors from 'cors'
 const app = express()
 
+app.use(cors(process.env.CLIENT_URL))
 app.use(express.json())
 
 // allow cross-origin requests
