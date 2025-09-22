@@ -3,8 +3,8 @@ import { createTransaction, getTransactions,getTransactionSummary, getTransactio
 
 const router = express.Router()
 // CRUD routes
-router.post('/transactions', createTransaction);
-router.get('/transactions', getTransactions);
+router.post('/', createTransaction);
+router.get('/', getTransactions);
 router.get('/transactions/summary', getTransactionSummary);
 router.get('/transactions/:id', getTransaction);
 router.put('/transactions/:id', updateTransaction);
