@@ -5,9 +5,9 @@ const router = express.Router()
 // CRUD routes
 router.post('/', createTransaction);
 router.get('/', getTransactions);
-router.get('/transactions/summary', getTransactionSummary);
-router.get('/transactions/:id', getTransaction);
-router.put('/transactions/:id', updateTransaction);
-router.delete('/transactions/:id', deleteTransaction);
+router.get('/summary', getTransactionSummary);
+router.get('/:id', getTransaction);
+router.put('/:id', updateTransaction);
+router.delete('/:id', deleteTransaction);
 
 export default router;
