@@ -5,7 +5,9 @@ import {
   getBudgetById,
   updateBudget,
   deleteBudget,
-  getBudgetsByUser
+  getBudgetsByUser,
+  getBudgetVsSpending,
+  getBudgetsWithProgress
 } from '../controllers/BudgetController.js';
 
 const router = express.Router();
@@ -18,6 +20,10 @@ router.get('/', getBudgets);
 
 // Get budgets by specific user
 router.get('/user/:userId', getBudgetsByUser);
+
+router.get('/get-budget-with-progress/:userId', getBudgetsWithProgress);
+
+router.get('/get-budget-spending/:userId/:period', getBudgetVsSpending);
 
 // Get single budget by ID
 router.get('/:id', getBudgetById);
