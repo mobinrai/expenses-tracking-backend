@@ -144,9 +144,7 @@ export const getBudgetsByUser = async (req, res) => {
     const total = await Budget.countDocuments({ userId });
     const hasNextPage = skip + budgets.length < total;
 
-        res.status(200).json({
-        success: true,
-        data: budgets,
+        res.status(200).json({budgets,
         pagination: {
             page,
             limit,
@@ -274,39 +272,73 @@ export const getBudgetVsSpending = async (req,res) => {
 
 
 export const getBudgetsWithProgress = async (req,res) => {
-  const budgets = await Budget.find({ userId:req.params.userId }).populate("categoryId");
-  
-    const results = await Promise.all(
-        budgets.map(async (budget) => {
-        const start = budget.startDate;
-        const end = budget.endDate || new Date();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-        const spent = await Transaction.aggregate([
-            { 
-            $match: { 
-                userId: budget.userId, 
-                categoryId: budget.categoryId._id, 
-                type: "expense",
-                date: { $gte: start, $lte: end }
-            } 
-            },
-            { $group: { _id: null, total: { $sum: "$amount" } } }
-        ]);
+    // Get total count and paginated budgets
+    const totalBudgets = await Budget.countDocuments({ userId: req.params.userId });
+    const budgets = await Budget.find({ userId: req.params.userId })
+    .populate("categoryId")
+    .skip(skip)
+    .limit(limit)
+    .sort({ createdAt: -1 });
 
-        const totalSpent = spent.length ? spent[0].total : 0;
-         return {
-                budgetId: budget._id,
-                category: budget.categoryId.name,
-                allocated: budget.amount,
-                spent: totalSpent,
-                remaining: budget.amount - totalSpent,
-                progress: Math.min((totalSpent / budget.amount) * 100, 100),
+    // Get all category IDs from the budgets
+    const categoryIds = budgets.map(budget => budget.categoryId._id);
+
+    // Fetch all transactions for these categories at once
+    const transactions = await Transaction.aggregate([
+        {
+            $match: {
+            userId: req.params.userId,
+            categoryId: { $in: categoryIds },
+            type: "expense"
             }
-        })
-    );
+        },
+        {
+            $group: {
+            _id: {
+                categoryId: "$categoryId",
+                // Group by month/year if you want to filter by budget period
+                // month: { $month: "$date" },
+                // year: { $year: "$date" }
+            },
+            total: { $sum: "$amount" }
+            }
+        }
+    ]);
+
+    // Create a map for quick lookup
+    const spentMap = new Map();
+    transactions.forEach(transaction => {
+        spentMap.set(transaction._id.categoryId.toString(), transaction.total);
+    });
+
+    const results = budgets.map((budget) => {
+    const totalSpent = spentMap.get(budget.categoryId._id.toString()) || 0;
+    
+    return {
+        budgetId: budget._id,
+        category: budget.categoryId.name,
+        icon: budget.categoryId.icon,
+        allocated: budget.amount,
+        spent: totalSpent,
+        remaining: budget.amount - totalSpent,
+        progress: Math.min((totalSpent / budget.amount) * 100, 100),
+    };
+    });
 
     return res.status(200).json({
-            success: true,
-            data:results
+    success: true,
+        results,
+        pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalBudgets / limit),
+        totalItems: totalBudgets,
+        itemsPerPage: limit,
+        hasNextPage: page < Math.ceil(totalBudgets / limit),
+        hasPrevPage: page > 1
+    }
     });
 };

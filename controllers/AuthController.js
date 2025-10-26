@@ -79,13 +79,15 @@ export const login= async (req, res) => {
 
 export const me = async (req, res) => {
     try {
+        console.log(req.user);
         res.json({
         user: {
             id: req.user._id,
             name: req.user.name,
             email: req.user.email,
             currency: req.user.currency,
-            settings: req.user.settings
+            settings: req.user.settings,
+            accountId:req.user.account?._id
         }
         });
     } catch (error) {

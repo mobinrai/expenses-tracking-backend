@@ -1,9 +1,10 @@
 import { Category } from "../models/allModels.js";
 
-// READ all categories
 export const getAllCategory = async (req, res) => {
     try {
-        const categories = await Category.find();
+        const {type} = req.query
+        const filter = type? {type}:{}
+        let categories = await Category.find(filter);
         res.json(categories);
     } catch (err) {
         res.status(500).json({ error: err.message });
